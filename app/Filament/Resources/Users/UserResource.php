@@ -48,8 +48,17 @@ class UserResource extends Resource
                     ->required(fn (string $operation): bool => $operation === 'create')
                     ->dehydrated(fn (?string $state): bool => filled($state))
                     ->minLength(8),
-                TextInput::make('role')->maxLength(255),
+                Select::make('role')->options([
+                    'admin' => 'Admin',
+                    'manager' => 'Manager',
+                    'employee' => 'Employee',
+                ])->required(),
                 TextInput::make('user_code')->maxLength(255)->unique(ignoreRecord: true),
+                DatePicker::make('birth_date'),
+                Select::make('locale')->options([
+                    'fr' => 'French',
+                    'en' => 'English',
+                ])->default('fr'),
                 Toggle::make('is_active')->default(true),
                 DatePicker::make('hired_at'),
                 DatePicker::make('terminated_at'),
@@ -57,8 +66,6 @@ class UserResource extends Resource
                 Toggle::make('is_work_stoppage')->default(false),
                 DatePicker::make('work_stoppage_start_date'),
                 DatePicker::make('work_stoppage_end_date'),
-                DatePicker::make('birth_date'),
-                TextInput::make('locale')->maxLength(10)->default('fr'),
             ]);
     }
 

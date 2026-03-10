@@ -2,13 +2,13 @@
 
 namespace App\Filament\Resources\Brands;
 
-use App\Filament\Resources\Brands\Pages\CreateBrand;
-use App\Filament\Resources\Brands\Pages\EditBrand;
 use App\Filament\Resources\Brands\Pages\ListBrands;
 use App\Models\Brand;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -36,8 +36,14 @@ class BrandResource extends Resource
                     ->maxLength(30)
                     ->rule('regex:/^[A-Z0-9_]+$/')
                     ->helperText('Tag en MAJUSCULES, ex: BURGER_KING'),
-                TextInput::make('logo')->maxLength(255),
-                TextInput::make('favicon')->maxLength(255),
+                FileUpload::make('logo')
+                    ->disk('public')
+                    ->directory('brands')
+                    ->image(),
+                FileUpload::make('favicon')
+                    ->disk('public')
+                    ->directory('brands')
+                    ->image(),
                 Select::make('theme_id')
                     ->relationship('theme', 'name')
                     ->searchable()
@@ -69,6 +75,7 @@ class BrandResource extends Resource
             ])
             ->recordActions([
                 EditAction::make(),
+                DeleteAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
@@ -85,8 +92,6 @@ class BrandResource extends Resource
     {
         return [
             'index' => ListBrands::route('/'),
-            'create' => CreateBrand::route('/create'),
-            'edit' => EditBrand::route('/{record}/edit'),
         ];
     }
 }

@@ -2,14 +2,14 @@
 
 namespace App\Filament\Resources\Stores;
 
-use App\Filament\Resources\Stores\Pages\CreateStore;
-use App\Filament\Resources\Stores\Pages\EditStore;
 use App\Filament\Resources\Stores\Pages\ListStores;
 use App\Models\Store;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
@@ -42,7 +42,7 @@ class StoreResource extends Resource
                 TextInput::make('franchise_number')->maxLength(255),
                 TextInput::make('primary_color')->maxLength(20),
                 TextInput::make('secondary_color')->maxLength(20),
-                TextInput::make('logo')->maxLength(255),
+                FileUpload::make('logo')->disk('public')->directory('stores')->image(),
                 TextInput::make('address')->maxLength(255),
                 TextInput::make('city')->maxLength(255),
                 TextInput::make('province')->maxLength(255),
@@ -82,6 +82,7 @@ class StoreResource extends Resource
             ])
             ->recordActions([
                 EditAction::make(),
+                DeleteAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
@@ -98,8 +99,6 @@ class StoreResource extends Resource
     {
         return [
             'index' => ListStores::route('/'),
-            'create' => CreateStore::route('/create'),
-            'edit' => EditStore::route('/{record}/edit'),
         ];
     }
 }
