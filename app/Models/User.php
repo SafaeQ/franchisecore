@@ -3,12 +3,13 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Filament\Models\Contracts\HasName;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
+class User extends Authenticatable implements HasName
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
@@ -19,7 +20,6 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
         'store_id',
         'brand_id',
         'first_name',
@@ -85,4 +85,18 @@ class User extends Authenticatable
         return $this->belongsTo(Brand::class);
     }
 
+    public function getFilamentName(): string
+    {
+        $name = trim(($this->first_name ?? '') . ' ' . ($this->last_name ?? ''));
+
+        if ($name !== '') {
+            return $name;
+        }
+
+        if (!empty($this->email)) {
+            return $this->email;
+        }
+
+        return 'User #' . $this->getKey();
+    }
 }

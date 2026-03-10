@@ -41,7 +41,6 @@ class UserResource extends Resource
                     ->preload(),
                 TextInput::make('first_name')->maxLength(255),
                 TextInput::make('last_name')->maxLength(255),
-                TextInput::make('name')->maxLength(255),
                 TextInput::make('email')->email()->required()->maxLength(255)->unique(ignoreRecord: true),
                 TextInput::make('password')
                     ->password()
