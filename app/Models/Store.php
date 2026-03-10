@@ -62,14 +62,6 @@ class Store extends Model
     }
 
     /**
-     * @return HasMany<StoreEmployee, $this>
-     */
-    public function storeEmployees(): HasMany
-    {
-        return $this->hasMany(StoreEmployee::class);
-    }
-
-    /**
      * @return BelongsTo<Store, $this>
      */
     public function parent(): BelongsTo
@@ -83,13 +75,5 @@ class Store extends Model
     public function children(): HasMany
     {
         return $this->hasMany(Store::class, 'core_store_id');
-    }
-
-    /**
-     * @return BelongsTo<StoreEmployee, $this>
-     */
-    public function manager(): BelongsTo
-    {
-        return $this->belongsTo(StoreEmployee::class, 'store_employee_id');
     }
 }

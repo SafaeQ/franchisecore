@@ -64,11 +64,6 @@ class StoreResource extends Resource
                     ->searchable()
                     ->preload()
                     ->label('Restaurant parent'),
-                Select::make('store_employee_id')
-                    ->relationship('manager', 'id')
-                    ->searchable()
-                    ->preload()
-                    ->label('Responsable principal'),
             ]);
     }
 
