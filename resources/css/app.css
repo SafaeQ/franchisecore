@@ -9,3 +9,33 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+/* Override Filament simple layout width for login form container */
+@media (max-width: 1023px) {
+    .fi-simple-main.fi-width-lg {
+        max-width: 32rem !important;
+    }
+}
+
+@media (min-width: 1024px) {
+    .fi-simple-main.fi-width-lg {
+        max-width: 64rem !important;
+    }
+}
+
+/* Login container widths */
+.container-lg {
+    max-width: 32rem;
+    width: 100%;
+}
+
+.container-5xl {
+    max-width: 64rem;
+    width: 100%;
+}
+
+@media (max-width: 1023px) {
+    .container-5xl {
+        max-width: 32rem;
+    }
+}

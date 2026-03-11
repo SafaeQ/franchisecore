@@ -13,6 +13,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
+use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -37,6 +38,14 @@ class UserResource extends Resource
                     ->preload(),
                 Select::make('store_id')
                     ->relationship('store', 'name')
+                    // Limit store options to those belonging to the selected brand
+                    ->options(function (callable $get) {
+                        $brandId = $get('brand_id');
+                        if ($brandId) {
+                            return \App\Models\Store::where('brand_id', $brandId)->pluck('name', 'id');
+                        }
+                        return [];
+                    })
                     ->searchable()
                     ->preload(),
                 TextInput::make('first_name')->maxLength(255),
@@ -63,9 +72,10 @@ class UserResource extends Resource
                 DatePicker::make('hired_at'),
                 DatePicker::make('terminated_at'),
                 TextInput::make('termination_reason')->maxLength(255),
-                Toggle::make('is_work_stoppage')->default(false),
-                DatePicker::make('work_stoppage_start_date'),
-                DatePicker::make('work_stoppage_end_date'),
+                Toggle::make('is_work_stoppage')->default(false)->live(),
+                // if work stoppage is enabled, show the start and end date fields
+                DatePicker::make('work_stoppage_start_date')->visible(fn (Get $get) => $get('is_work_stoppage') === true),
+                DatePicker::make('work_stoppage_end_date')->visible(fn (Get $get) => $get('is_work_stoppage') === true),
             ]);
     }
 
@@ -79,6 +89,7 @@ class UserResource extends Resource
                 TextColumn::make('role')->badge(),
                 TextColumn::make('brand.name')->label('Brand')->sortable(),
                 TextColumn::make('store.name')->label('Store')->sortable(),
+                TextColumn::make('birth_date')->label('Birth Date')->date(),
                 IconColumn::make('is_active')->boolean()->label('Active'),
                 TextColumn::make('created_at')->dateTime()->sortable()->toggleable(isToggledHiddenByDefault: true),
             ])

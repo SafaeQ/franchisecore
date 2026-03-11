@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Stores;
 
 use App\Filament\Resources\Stores\Pages\ListStores;
 use App\Models\Store;
+use Dom\Text;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -47,7 +48,8 @@ class StoreResource extends Resource
                 TextInput::make('city')->maxLength(255),
                 TextInput::make('province')->maxLength(255),
                 TextInput::make('postal_code')->maxLength(20),
-                TextInput::make('phone')->tel()->maxLength(50),
+                // validation for phone number
+                TextInput::make('phone')->tel()->maxLength(50)->rule('regex:/^\+?[0-9\s\-]+$/'),
                 TextInput::make('email')->email()->maxLength(255),
                 Toggle::make('is_active')->default(true),
                 Select::make('project_type')
@@ -61,6 +63,14 @@ class StoreResource extends Resource
                 DatePicker::make('expected_opening_date'),
                 Select::make('core_store_id')
                     ->relationship('parent', 'name')
+                    // Limit options to stores belonging to the same brand
+                    ->options(function (callable $get) {
+                        $brandId = $get('brand_id');
+                        if ($brandId) {
+                            return Store::where('brand_id', $brandId)->pluck('name', 'id');
+                        }
+                        return [];
+                    })
                     ->searchable()
                     ->preload()
                     ->label('Restaurant parent'),
@@ -73,11 +83,16 @@ class StoreResource extends Resource
             ->columns([
                 TextColumn::make('name')->searchable()->sortable(),
                 TextColumn::make('brand.name')->label('Brand')->sortable(),
-                TextColumn::make('slug')->searchable(),
                 TextColumn::make('franchise_number')->label('No. franchisé')->toggleable(),
                 TextColumn::make('project_type')->badge(),
                 IconColumn::make('is_active')->boolean()->label('Actif'),
+                // Show parent store name if exists, otherwise show "N/A"
+                TextColumn::make('parent.name')->label('Restaurant parent')->default('N/A'),
+                TextColumn::make('address')->toggleable(),
                 TextColumn::make('city')->toggleable(),
+                TextColumn::make('province')->toggleable(),
+                TextColumn::make('postal_code')->toggleable(),
+                TextColumn::make('phone')->toggleable(),
                 TextColumn::make('created_at')->dateTime()->sortable()->toggleable(isToggledHiddenByDefault: true),
             ])
             ->recordActions([

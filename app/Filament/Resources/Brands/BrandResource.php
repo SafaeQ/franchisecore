@@ -14,6 +14,8 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use UnitEnum;
@@ -48,7 +50,7 @@ class BrandResource extends Resource
                     ->relationship('theme', 'name')
                     ->searchable()
                     ->preload(),
-                TextInput::make('sms_phone_number')->tel()->maxLength(50),
+                TextInput::make('sms_phone_number')->tel()->maxLength(50)->rule('regex:/^\+?[0-9\s\-]+$/'),
                 TextInput::make('email_from_address')->email()->maxLength(255),
                 TextInput::make('email_from_name')->maxLength(255),
                 KeyValue::make('design_config')
@@ -66,6 +68,12 @@ class BrandResource extends Resource
     {
         return $table
             ->columns([
+                ImageColumn::make('logo')->label('Logo')
+                    ->disk('public')
+                    ->imageHeight(50)
+                    ->imageWidth(50)
+                    ->circular()
+                    ->defaultImageUrl(asset('images/placeholder.png')),
                 TextColumn::make('name')->searchable()->sortable(),
                 TextColumn::make('tag')->sortable(),
                 TextColumn::make('theme.name')->label('Theme')->sortable(),
