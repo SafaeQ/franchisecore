@@ -31,6 +31,12 @@ class ThemeResource extends Resource
                 TextInput::make('slug')
                     ->maxLength(255)
                     ->unique(ignoreRecord: true),
+                TextInput::make('primary_color')
+                    ->label('Primary color')
+                    ->maxLength(20),
+                TextInput::make('font_family')
+                    ->label('Font family')
+                    ->maxLength(100),
             ]);
     }
 
@@ -40,6 +46,8 @@ class ThemeResource extends Resource
             ->columns([
                 TextColumn::make('name')->searchable()->sortable(),
                 TextColumn::make('slug')->searchable()->sortable()->toggleable(),
+                TextColumn::make('primary_color')->label('Primary')->toggleable(),
+                TextColumn::make('font_family')->label('Font')->toggleable(),
                 TextColumn::make('created_at')->dateTime()->sortable()->toggleable(isToggledHiddenByDefault: true),
             ])
             ->recordActions([

@@ -16,6 +16,8 @@ class Theme extends Model
     protected $fillable = [
         'name',
         'slug',
+        'primary_color',
+        'font_family',
     ];
 
     /**
