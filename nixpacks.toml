@@ -1,13 +1,13 @@
 [phases.setup]
 nixPkgs = [
     "php84",
+    "php84Extensions.zip",
     "php84Extensions.intl",
     "php84Extensions.mbstring",
     "php84Extensions.pdo",
     "php84Extensions.pdo_mysql",
     "php84Extensions.opcache",
     "php84Extensions.sodium",
-    "php84Extensions.zip",
     "php84Extensions.curl",
     "php84Extensions.xml",
     "php84Extensions.tokenizer",
@@ -19,14 +19,15 @@ nixPkgs = [
     "php84Extensions.simplexml",
     "php84Extensions.xmlwriter",
     "php84Extensions.xmlreader",
-    "php84Extensions.openssl",
-    "php84Extensions.pcre",
-    "php84Extensions.phar",
-    "php84Extensions.iconv"
+    "php84Extensions.iconv",
+    "zip",
+    "unzip",
+    "libzip"
 ]
 
 [phases.build]
 cmds = [
+    "php -m | grep zip",
     "composer install --optimize-autoloader --no-scripts --no-interaction",
     "npm install",
     "npm run build"
